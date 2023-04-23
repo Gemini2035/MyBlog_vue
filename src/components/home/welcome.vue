@@ -1,81 +1,45 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { StyleValue, reactive } from 'vue';
+import { returnVoidFunction } from  '../../../cat_define/type_define'
 
-const classType = defineProps({
-    state: String
-})
+// 由于setInterval函数有两个重载，一个是NodeJS.Timer返回类型, 一个是number返回类型。注意区别
+let timer: number | null = null;
+const containerColor: StyleValue = reactive({
+    backgroundColor: 'rgba(254, 100, 100, 0.1)'
+});
+const headerColor: StyleValue = reactive({
+    
+});
 
-const className = ref(classType.state)
+// methods:
+const randomColor: returnVoidFunction = () => {
 
-const clickBehavior = () => {
-    className.value = ''
 }
 </script>
 <template>
-    <div :class="className" @click="clickBehavior">
-        <h1>Welcome!</h1>
-        <img src="../../assets/arrow.right.svg" alt="" v-if="className === 'active'">
+    <div :style="containerColor">
+        <h1 :style="headerColor">Welcome!</h1>
     </div>
 </template>
 
 <style scoped>
 div {
-    font-size: 50px;
-    width: 100vw;
     position: relative;
-    padding-left: 10px;
-    
-}
-
-div :hover{
-    cursor: pointer;
-}
-
-div h1{
-    margin: 0;
+    width: 100vw;
+    height: 100vh;
     transition: 0.6s ease-in-out;
 }
 
-div.active{
-        margin-top: 15%;
-        margin-bottom: 100vh;
-    }
-div.active h1 {
-    font-size: 15rem;
+div h1 {
+    position: absolute;
+    margin: 0;
+    font-size: 18rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-@media (max-width: 1249px) {
-    div.active h1{
-        text-align: center;
-    }
-
-    div img {
-        display: none;
-    }
+div h1:hover {
+    cursor: pointer;
 }
-
-@media (min-width: 1250px) {
-    div.active img {
-        height: 75px;
-        width: auto;
-        position: absolute;
-        right: 3vw;
-        top: 45%;
-        /* transform: translateY(-30%); */
-    }
-
-    div img {
-        animation: animate 3s infinite;
-    }
-
-    div img:hover {
-        animation: animate 1s infinite;
-    }
-
-    @keyframes animate {
-        50% { opacity: 0.3; }
-    }
-}
-
-
 </style>

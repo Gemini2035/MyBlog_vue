@@ -12,9 +12,9 @@ const changeToPage: returnVoidFunction = (toPage: string) => pageNum.value = toP
 
 <template>
         <div class="container">
-            <WellcomePart v-if="pageNum === 'hello'" @click="changeToPage('menu')"/>
             <transition>
-                <BreifIntro v-if="pageNum === 'menu'"/>
+                <WellcomePart v-if="pageNum === 'hello'" @click="changeToPage('menu')"/>
+                <BreifIntro v-else-if="pageNum === 'menu'"/>
             </transition>
         </div>
     

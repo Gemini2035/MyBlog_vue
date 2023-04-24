@@ -19,8 +19,8 @@ const colorList: Array<object> = [
 // 由于setInterval函数有两个重载，一个是NodeJS.Timer返回类型, 一个是number返回类型。注意区别
 let LoopTimer: number | undefined = undefined;
 
-const bgcolor: Ref | undefined = ref('rgba(0, 0, 0, 1)');
-const fcolor: Ref | undefined = ref('rgba(255, 255, 255, 0.9)')
+const bgcolor: Ref<string> = ref('rgba(0, 0, 0, 1)');
+const fcolor: Ref<string> = ref('rgba(255, 255, 255, 0.9)')
 
 // methods:
 const randomColor: returnVoidFunction = () => {

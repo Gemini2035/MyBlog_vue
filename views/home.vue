@@ -2,9 +2,12 @@
 import { Ref, ref } from 'vue'
 import WellcomePart from '../src/components/home/welcome.vue'
 import BreifIntro from '../src/components/home/breif_intro.vue'
+import PlayPart from '../src/components/home/play_part.vue'
+import StudyPart from '../src/components/home/study_part.vue'
+import ErrorPart from '../src/components/home/home_error.vue'
 import { returnVoidFunction } from '../cat_define/type_define'
 
-const pageNum: Ref<string> = ref('hello'); // 'hello', 'menu', 'play', 'study'
+const pageNum: Ref<string> = ref('menu'); // 'hello', 'menu', 'play', 'study'
 
 // method:
 const changeToPage: returnVoidFunction = (toPage: string) => pageNum.value = toPage
@@ -12,9 +15,12 @@ const changeToPage: returnVoidFunction = (toPage: string) => pageNum.value = toP
 
 <template>
         <div class="container">
-            <transition>
+            <transition name="transition" mode="in-out">
                 <WellcomePart v-if="pageNum === 'hello'" @click="changeToPage('menu')"/>
-                <BreifIntro v-else-if="pageNum === 'menu'"/>
+                <BreifIntro v-else-if="pageNum === 'menu'" @click="changeToPage('play')"/>
+                <PlayPart v-else-if="pageNum === 'play'" @click="changeToPage('study')"/>
+                <StudyPart v-else-if="pageNum === 'study'" @click="changeToPage('menu')"/>
+                <ErrorPart v-else/>
             </transition>
         </div>
     
@@ -28,5 +34,13 @@ const changeToPage: returnVoidFunction = (toPage: string) => pageNum.value = toP
     height: 100vh;
     overflow: hidden;
     /* background-color: gray; */
+}
+
+.transition-leave-to {
+    opacity: 0.2;
+}
+
+.transition-leave-active {
+    transition: 0.6s ease-in-out;
 }
 </style>

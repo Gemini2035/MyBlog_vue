@@ -27,7 +27,7 @@ const randomColor: returnVoidFunction = () => {
     let oldColor: string = bgcolor.value;
     let { bgc, fc } = {bgc: '', fc: ''};
     do {
-        ({ bgc, fc } = (colorList[Math.floor(Math.random()*colorList.length)] as { bgc: string, fc: string }));
+        ({ bgc, fc } = (colorList[Math.floor(Math.random() * colorList.length)] as { bgc: string, fc: string }));
     } while ( bgc === oldColor)
     bgcolor.value = bgc;
     fcolor.value = fc;

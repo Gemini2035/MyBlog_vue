@@ -4,7 +4,7 @@ import { returnVoidFunction } from '../../../cat_define/type_define';
 
 const imgOffsets: Ref<string> = ref('translate(0, 0)');
 const transitionMode: Ref<string> = ref('0.1s ease-in-out');
-
+const responseTime = 1500 //s
 
 // methods:
 const clearOffset: returnVoidFunction = () => { 
@@ -12,12 +12,12 @@ const clearOffset: returnVoidFunction = () => {
     transitionMode.value = '0.6s ease-in-out'
 }
 
-let LoopTimer: number | undefined = window.setTimeout(clearOffset, 3000);
+let LoopTimer: number | undefined = window.setTimeout(clearOffset, responseTime);
 
 const mouseMoveBehavior: returnVoidFunction = () => {
     window.addEventListener('mousemove', (ev: object) => {
         clearTimeout(LoopTimer);
-        LoopTimer =  window.setTimeout(clearOffset, 3000);
+        LoopTimer =  window.setTimeout(clearOffset, responseTime);
         const standerdX: number = document.body.clientWidth / 2;
         const standerdY: number = document.body.clientHeight / 2;
         const { pageX, pageY } = ev as { pageX: number, pageY: number };

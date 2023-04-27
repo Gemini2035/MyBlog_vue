@@ -16,7 +16,7 @@ const changeToPage: returnVoidFunction = (toPage: string) => pageNum.value = toP
 <template>
         <div class="container">
             <transition name="transition" mode="in-out">
-                <WellcomePart v-if="pageNum === 'hello'" @click="changeToPage('menu')"/>
+                <WellcomePart v-if="pageNum === 'hello'" />
                 <BreifIntro v-else-if="pageNum === 'menu'" @click="changeToPage('play')"/>
                 <PlayPart v-else-if="pageNum === 'play'" @click="changeToPage('study')"/>
                 <StudyPart v-else-if="pageNum === 'study'" @click="changeToPage('menu')"/>

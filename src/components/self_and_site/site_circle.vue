@@ -50,12 +50,11 @@ onUnmounted(() => {
     <div class="site-circle">
         <img src="../../assets/circle.svg" alt="错误" :style="{ rotate: imgDegree }">
         <div class="text-group">
-            <h1>本站点已上线</h1>
+            <h1 class="first-raw">本站点已上线</h1>
             <div class="day-container">
                 <span class="day">{{ siteDays }}</span>
                 <span class="others">天</span>
             </div>
-            <!-- <h3>天</h3> -->
         </div>
     </div>
 </template>
@@ -83,8 +82,11 @@ onUnmounted(() => {
     width: 50%;
     height: 50%;
     transform: translate(-50%, -50%);
-    /* background-color: gray; */
     text-align: center;
+}
+
+.site-circle .text-group .first-raw {
+    transform: translateX(-15%);
 }
 
 .site-circle .text-group .day-container {   
@@ -104,5 +106,15 @@ onUnmounted(() => {
     margin-left: 3%;
     font-size: 2rem;
     font-weight: bold;
+}
+
+/* 以下为移动端屏幕适配 */
+/** Pad **/
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .site-circle .text-group .first-raw {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 </style>

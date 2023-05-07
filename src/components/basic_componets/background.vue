@@ -41,6 +41,8 @@ onMounted(() => {
 
 <style scoped>
 .background {
+    position: fixed;
+    z-index: -1;
     width: 100vw;
     height: 100vh;
     background-image: url('../../assets/background_imgs.svg');
@@ -48,5 +50,12 @@ onMounted(() => {
     background-size: contain;
     background-position: 1%;
     opacity: 0.1;
+}
+
+/* 屏幕适配 */
+@media only screen and (max-width: 350px) {
+    .background {
+        background-image: url('../../assets/background_imgs_row.svg');
+    }
 }
 </style>

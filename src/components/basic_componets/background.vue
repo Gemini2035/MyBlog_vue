@@ -53,7 +53,7 @@ onMounted(() => {
 }
 
 /* 屏幕适配 */
-@media only screen and (max-width: 350px) {
+@media only screen and (max-width: 412px) {
     .background {
         background-image: url('../../assets/background_imgs_row.svg');
     }

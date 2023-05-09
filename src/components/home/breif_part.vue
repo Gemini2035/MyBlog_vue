@@ -13,7 +13,7 @@ const itemInfo: Raw<Array<{title: string, titleImg: string, itemMenu: Array<stri
         id: 'self'
     },
     {
-        title: '网站简介',
+        title: '站点简介',
         titleImg: "src/assets/breif_part_imgs/paperplane.svg",
         itemMenu: ['工具列表', '语言统计', '贡献者', '其他'],
         id: 'site'
@@ -30,7 +30,8 @@ const itemInfo: Raw<Array<{title: string, titleImg: string, itemMenu: Array<stri
         itemMenu: ['Web', 'Python', 'C&Cpp', 'SwiftUI', '其他'],
         id: 'study'
     }
-])
+]);
+
 
 </script>
 

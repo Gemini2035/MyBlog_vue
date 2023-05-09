@@ -12,11 +12,11 @@ import Background from '../src/components/basic_componets/background.vue';
 import { returnVoidFunction } from '../cat_define/type_define';
 
 // respond:
-const pageNum: Ref<string> = ref('menu'); // 'hello', 'menu', 'self', 'site', 'play', 'study'
+const pageNum: Ref<string> = ref('self'); // 'hello', 'menu', 'self', 'site', 'play', 'study'
 const anchor: Ref<string> = ref('');
 
 // method:
-const changeToPage: returnVoidFunction = (toPage: string, anchorPoint: string) => {
+const changeToPage: returnVoidFunction = (toPage: string, anchorPoint: string = '') => {
     pageNum.value = toPage;
     anchor.value = anchorPoint;
 }
@@ -29,7 +29,7 @@ provide('toPageMethod', changeToPage);
         <div class="container">
             <Background />
             <transition name="transition" mode="in-out">
-                <WellcomePart v-if="pageNum === 'hello'" />
+                <WellcomePart v-if="pageNum === 'hello'" @click="changeToPage('menu')" />
                 <BreifIntro v-else-if="pageNum === 'menu'"/>
                 <SelfPart v-else-if="pageNum === 'self'" :anchor="anchor"/>
                 <SitePart v-else-if="pageNum === 'site'" />

@@ -8,7 +8,6 @@ import ToDetail from './to_detail.vue';
 const hoverEffect: Raw<Array<string>> = markRaw(['rotateZ(15deg)', 'rotateZ(-15deg)', 'translate(3px, 3px)', 'rotateZ(360deg)', 'rotateZ(-360deg)']);
 
 // respond:
-const anchor: Ref<string> = ref('');
 const effect: Ref<Array<string>> = ref([]);
 const everyItemInfo: Readonly<ExtractPropTypes<{
     title: StringConstructor,

@@ -1,26 +1,91 @@
 <script setup lang="ts">
-import { ExtractPropTypes, Ref, ref } from 'vue';
+import { ExtractPropTypes, Ref, markRaw, ref, Raw, onMounted } from 'vue';
 
 import Menu from '../basic_componets/menu.vue';
+import SelfMenu from '../self_part/site_menu.vue';
+import ShortPassage from '../self_part/short_passage.vue';
+import ContactWay from '../self_part/contact_way.vue';
+import SiteIntro from '../self_part/site_intro.vue';
+import Others from '../self_part/others.vue';
+import { returnVoidFunction } from '../../../cat_define/type_define';
 
-// respond
+// static
 const reseiver: Readonly<ExtractPropTypes<{anchor: StringConstructor;}>> = defineProps({anchor: String});
-console.log(reseiver.anchor)
-
+const componentsList: Raw<Array<{id: string, component: object}>> = markRaw([
+    {
+        id: '小短文',
+        component: ShortPassage
+    }, 
+    {
+        id: '联系方式',
+        component: ContactWay
+    }, 
+    {
+        id: '秘密基地',
+        component: SiteIntro
+    }, 
+    {
+        id: '其他',
+        component: Others
+    }
+]);
+// respond
 // method
+const toAnchor: returnVoidFunction = (anchor: string) => {
+    if (!anchor) return;
+    document.querySelector(`#${anchor}`)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+onMounted(() => {
+    toAnchor(reseiver.anchor);
+})
 </script>
 
 <template>
-    <div class="container">
+    <div class="self-container">
         <Menu now-position="self" />
+        <div class="breif-container">
+            <SelfMenu :content="componentsList.map(item => { return item.id })" :to-anchor="toAnchor"/>
+        </div>
+        <div class="main-content">
+            <h1 class="title">我是谁</h1>
+            <hr>
+            <component v-for="(component, index) in componentsList" :key="index" :id="component.id" :is="component.component" />
+        </div>
     </div>
 </template>
 
 <style scoped>
-.container {
+* {
+    transition: 0.6s ease-in-out;
+}
+
+.self-container {
     width: 100vw;
     height: 100vh;
-    /* background-color: blue; */
-    
+    display: flex;
+}
+
+.self-container .breif-container {
+    width: calc(25% - 5px);
+    height: 99%;
+    margin: auto;
+    border-right: 5px solid rgba(128, 128, 128, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.self-container .main-content {
+    width: 75%;
+    height: 98%;
+    overflow-y: auto;
+    padding: 1%;
+}
+
+.self-container .title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 3rem;
 }
 </style>

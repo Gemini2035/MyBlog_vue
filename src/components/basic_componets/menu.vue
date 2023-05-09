@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Raw, inject, markRaw, reactive, Ref, ref, ExtractPropTypes } from 'vue';
+import { Raw, inject, markRaw, reactive, Ref, ref, ExtractPropTypes, onMounted } from 'vue';
 
 import { returnVoidFunction } from '../../../cat_define/type_define';
 
@@ -13,8 +13,9 @@ const partInfo: Raw<Array<{ name: string, id: string, position: {x: string, y: s
 ]);
 
 // respond
-const parm: Readonly<ExtractPropTypes<{nowPosition: StringConstructor, initX: NumberConstructor, initY: NumberConstructor}>> = defineProps({nowPosition: String, x: Number, y: Number});
+const parm: Readonly<ExtractPropTypes<{nowPosition: StringConstructor, initX: NumberConstructor, initY: NumberConstructor}>> = defineProps({nowPosition: String, initX: Number, initY: Number});
 const menuPosition: { x: number, y: number} = reactive({ x: parm.initX || 0, y: parm.initY || 0 });
+const isVisible: Ref<boolean> = ref(false);
 const isActive: Ref<boolean> = ref(false);
 const isDragging: Ref<boolean> = ref(false);
 const className: Ref<string> = ref('');
@@ -50,10 +51,14 @@ const mouseUpBehavior: returnVoidFunction = () => {
     isDragging.value = false;
 }
 
+onMounted(() => {
+    setTimeout(() => isVisible.value = true, 1200);
+})
+
 </script>
 
 <template>
-    <div class="menu-container" :class="isActive? 'active' : ''"
+    <div class="menu-container" :class="isActive? 'active' : ''" v-if="isVisible"
     @mousedown="mouseDownBehavior" @mouseup="mouseUpBehavior" @mouseleave="mouseUpBehavior" @mousemove="dragBehavior"
     :style="{left: `${menuPosition.x}px`, top: `${menuPosition.y}px`}">
         <div class="menu-circle" :class="isActive? 'active' : ''" @click="clickBehavior()">
@@ -76,9 +81,8 @@ const mouseUpBehavior: returnVoidFunction = () => {
 .menu-container {
     width: 300px;
     height: 200px;
-    display: flex;
+    position: fixed;
     z-index: 0;
-    position: relative;
     transition: none;
     opacity: 0.5;
 }

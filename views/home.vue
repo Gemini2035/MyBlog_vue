@@ -12,7 +12,7 @@ import Background from '../src/components/basic_componets/background.vue';
 import { returnVoidFunction } from '../cat_define/type_define';
 
 // respond:
-const pageNum: Ref<string> = ref('self'); // 'hello', 'menu', 'self', 'site', 'play', 'study'
+const pageNum: Ref<string> = ref('menu'); // 'hello', 'menu', 'self', 'site', 'play', 'study'
 const anchor: Ref<string> = ref('');
 
 // method:

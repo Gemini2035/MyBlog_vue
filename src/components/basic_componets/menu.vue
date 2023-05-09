@@ -13,8 +13,8 @@ const partInfo: Raw<Array<{ name: string, id: string, position: {x: string, y: s
 ]);
 
 // respond
-const parm: Readonly<ExtractPropTypes<{nowPosition: StringConstructor;}>> = defineProps({nowPosition: String});
-const menuPosition: { x: number, y: number} = reactive({ x: 0, y: 0 });
+const parm: Readonly<ExtractPropTypes<{nowPosition: StringConstructor, initX: NumberConstructor, initY: NumberConstructor}>> = defineProps({nowPosition: String, x: Number, y: Number});
+const menuPosition: { x: number, y: number} = reactive({ x: parm.initX || 0, y: parm.initY || 0 });
 const isActive: Ref<boolean> = ref(false);
 const isDragging: Ref<boolean> = ref(false);
 const className: Ref<string> = ref('');

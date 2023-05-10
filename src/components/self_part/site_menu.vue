@@ -50,10 +50,6 @@ const parm: Readonly<ExtractPropTypes<{ content: ArrayConstructor, toAnchor: Fun
     flex-direction: column;
 }
 
-.self-menu .menu-content h2 {
-    padding: 0.5%;
-}
-
 .self-menu .menu-content h2:hover {
     cursor: pointer;
     transition: 0.6s ease-in-out;

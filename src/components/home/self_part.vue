@@ -88,4 +88,20 @@ onMounted(() => {
     margin-bottom: 0;
     font-size: 3rem;
 }
+
+/* 以下为设备适配 */
+/** Phone **/
+@media only screen and (min-width: 320px) and (max-width: 1024px) {
+    .self-container .breif-container {
+        display: none;
+    }
+    
+    .self-container .main-content {
+        width: 100%;
+    }
+
+    .self-container .main-content .title {
+        font-size: 2.5rem;
+    }
+}
 </style>

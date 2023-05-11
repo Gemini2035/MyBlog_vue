@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ExtractPropTypes, Ref, markRaw, ref, Raw, onMounted } from 'vue';
+import { ExtractPropTypes, markRaw, Raw, onMounted } from 'vue';
 
-import Menu from '../basic_componets/menu.vue';
+import PartMenu from '../basic_componets/part_menu.vue';
 import SelfMenu from '../self_part/site_menu.vue';
 import ShortPassage from '../self_part/short_passage.vue';
 import ContactWay from '../self_part/contact_way.vue';
@@ -43,7 +43,7 @@ onMounted(() => {
 
 <template>
     <div class="self-container">
-        <Menu now-position="self" />
+        <PartMenu now-position="self" />
         <div class="breif-container">
             <SelfMenu :content="componentsList.map(item => { return item.id })" :to-anchor="toAnchor"/>
         </div>

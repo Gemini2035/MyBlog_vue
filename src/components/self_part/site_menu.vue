@@ -64,4 +64,43 @@ const parm: Readonly<ExtractPropTypes<{ content: ArrayConstructor, toAnchor: Fun
     50% { transform: translateX(-10px); }
     100% { transform: translateX(-3px); }
 }
+
+/* 以下为设备适配 */
+/** Phone **/
+@media only screen and (min-width: 320px) and (max-width: 1024px) {
+    .self-menu {
+        display: flex;
+        border: none;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .self-menu hr {
+        display: none;
+    }
+
+    .self-menu .menu-title {
+        margin: 0;
+        margin-left: 3%;
+    }
+
+    .self-menu .menu-content {
+        width: 85%;
+        flex-direction: row;
+    }
+    
+    .self-menu .menu-content h2 {
+        margin: 0;
+        width: 100px;
+        flex: 1;
+        padding-right: 5px;
+        margin-top: 1%;
+        border-right: 3px solid rgb(128, 128, 128);
+    }
+
+    .self-menu .menu-content h2:hover {
+        border: none;
+        transform: translateX(3px);
+    }
+}
 </style>

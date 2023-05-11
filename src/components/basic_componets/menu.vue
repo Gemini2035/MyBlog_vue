@@ -42,13 +42,18 @@ const mouseDownBehavior: returnVoidFunction = () => {
     isDragging.value = true;
 }
 const dragBehavior: returnVoidFunction = (event: {clientX: number, clientY: number}) => {
-    if (!isDragging.value || isActive.value) return;
+    if (!isDragging.value) return;
     menuPosition.x = event.clientX - 150;
     menuPosition.y = event.clientY - 100;
 }
 
 const mouseUpBehavior: returnVoidFunction = () => {
     isDragging.value = false;
+    if (menuPosition.x - 150 < 0) menuPosition.x = -150;
+    if (menuPosition.y - 100 < 0) menuPosition.y = -100;
+    if (menuPosition.x + 200 > document.body.clientWidth) menuPosition.x = document.body.clientWidth - 150;
+    if (menuPosition.y + 150 > document.body.clientHeight) menuPosition.x = document.body.clientHeight - 100;
+
 }
 
 onMounted(() => {
@@ -82,9 +87,9 @@ onMounted(() => {
     width: 300px;
     height: 200px;
     position: fixed;
-    z-index: 0;
+    z-index: 5;
     transition: none;
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 .menu-container:hover {

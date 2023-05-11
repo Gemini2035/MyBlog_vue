@@ -92,10 +92,16 @@ onMounted(() => {
 /* 以下为设备适配 */
 /** Phone **/
 @media only screen and (min-width: 320px) and (max-width: 1024px) {
-    .self-container .breif-container {
-        display: none;
+    .self-container {
+        flex-direction: column;
     }
-    
+
+    .self-container .breif-container {
+        width: 100%;
+        height: auto;
+        border-bottom: 1px solid rgba(128, 128, 128, 0.7);
+    }
+
     .self-container .main-content {
         width: 100%;
     }

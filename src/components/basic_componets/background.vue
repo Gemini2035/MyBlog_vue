@@ -45,7 +45,7 @@ onMounted(() => {
     z-index: -1;
     width: 100vw;
     height: 100vh;
-    background-image: url('../../assets/background_imgs.svg');
+    background-image: url('src/assets/basic_imgs/background_imgs.svg');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 1%;
@@ -55,7 +55,7 @@ onMounted(() => {
 /* 屏幕适配 */
 @media only screen and (max-width: 412px) {
     .background {
-        background-image: url('../../assets/background_imgs_row.svg');
+        background-image: url('src/assets/basic_imgs/background_imgs_row.svg');
     }
 }
 </style>

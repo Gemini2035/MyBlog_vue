@@ -48,7 +48,7 @@ onUnmounted(() => {
 
 <template>
     <div class="site-circle">
-        <img src="../../assets/circle.svg" alt="错误" :style="{ rotate: imgDegree }">
+        <img src="src/assets/breif_part_imgs/circle.svg" alt="错误" :style="{ rotate: imgDegree }">
         <div class="text-group">
             <h1 class="first-raw">本站点已上线</h1>
             <div class="day-container">

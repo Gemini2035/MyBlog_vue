@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ExtractPropTypes, Ref, onMounted, ref } from 'vue';
+import axios from 'axios';
 
 import { returnVoidFunction } from '../../../cat_define/type_define';
 import { JsonRequest } from '../../../cat_define/server_class';
-import axios from 'axios';
 import { ServerManager } from '../../../cat_define/server_info';
+import PartMenu from '../basic_componets/part_menu.vue';
+import ToTop from '../basic_componets/to_top.vue';
 
 // static
 const parm: Readonly<ExtractPropTypes<{initActive: BooleanConstructor;}>> = defineProps({initActive: Boolean});
@@ -26,11 +28,11 @@ const initFunc: returnVoidFunction = () => {
     })
     .finally(() => {
         if (!parm.initActive) { 
-        dynamicHeight.value = document.querySelector('#title')!.clientHeight;
-        return;
-    }
-    isActive.value = parm.initActive!;
-    dynamicHeight.value = (document.querySelector('#title')!.clientHeight + document.querySelector('#body')!.clientHeight);
+            dynamicHeight.value = document.querySelector('#title')!.clientHeight;
+            return;
+        }
+        isActive.value = parm.initActive!;
+        dynamicHeight.value = (document.querySelector('#title')!.clientHeight + document.querySelector('#body')!.clientHeight);
     })
 }
 
@@ -41,6 +43,14 @@ const chageState: returnVoidFunction = () => {
 
 }
 
+const toTargetUrl: returnVoidFunction = (index: number) => {
+    window.open(sitesList.value[index].src, '_blank');
+}
+
+const backToTop: returnVoidFunction = () => {
+    document.querySelector('#title')?.scrollIntoView({ behavior: 'smooth' })
+}
+
 onMounted(() => {
     initFunc();
 })
@@ -48,13 +58,23 @@ onMounted(() => {
 
 <template>
     <div class="sites-container" :style="{height: `${dynamicHeight}px`}">
+        <PartMenu :init-x="100" :init-y="-100"/>
         <div class="title" :class="isActive? 'active' : ''" id="title">
             <h1>构建本站点使用的工具</h1>
             <img src="src/assets/site_part_imgs/arrow.right.svg" alt="详细" :class="isActive? 'active' : ''" @click="chageState()">
         </div>
         <div class="sites-content" id="body">
-            <div v-for="(siteInfo, index) in sitesList">{{siteInfo.name}}</div>
+            <div v-for="(siteInfo, index) in sitesList" class="site-item" :key="index">
+                <img :src="`src/assets/site_part_imgs/${siteInfo.id}.svg`" alt="icon" class="icon">
+                <div class="info-content">
+                    <h1>{{siteInfo.name}}</h1>
+                    <h3 @click="toTargetUrl(index)">{{siteInfo.src}}</h3>
+                    <p v-html="siteInfo.description"></p>
+                </div>
+            </div>
+            <p class="tips">注: 带*号的可能需要魔法，懂得都懂</p>
         </div>
+        <ToTop v-show="isActive" :to-top-function="backToTop"/>
     </div>
 </template>
 
@@ -65,11 +85,9 @@ onMounted(() => {
 
 .sites-container {
     width: 99%;
-    background-color: red;
     margin: 0 auto 1%;
     height: 6%;
     overflow-y: hidden;
-    /* height: 100%; */
 }
 
 .sites-container .title {
@@ -101,8 +119,70 @@ onMounted(() => {
     transform: translateY(-50%) rotateZ(90deg);
 }
 
-.sites-container .sites-content {
-    background-color: blue;
-
+.sites-container .sites-content .site-item {
+    width: 100%;
+    margin: 0 auto 25px auto;
+    display: flex;
+    height: 250px;
+    border-radius: 20px;
 }
+
+.sites-container .sites-content .site-item .icon {
+    width: 10%;
+    height: auto;
+    margin: auto;
+}
+
+.sites-container .sites-content .site-item .info-content {
+    height: 95%;
+    overflow: hidden;
+    width: calc(90% - 13px);
+    border-left: 3px solid;
+    margin: auto 0 auto 10px;
+    padding-top: 10px;
+    cursor: default;
+}
+
+.sites-container .sites-content .site-item .info-content h1,
+.sites-container .sites-content .site-item .info-content h3 {
+    margin: 0;
+    margin-left: 10px;
+}
+
+.sites-container .sites-content .site-item .info-content h3:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.sites-container .sites-content .site-item .info-content p {
+    margin-top: 3px;
+    border-top: 1px solid;
+    width: 99%;
+    height: 64%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    padding-left: 10px;
+    padding-top: 10px;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.sites-container .sites-content .site-item .info-content p:deep() img {
+    height: 25px;
+    width: auto;
+    vertical-align: text-bottom;
+}
+
+.sites-container .sites-content .site-item .info-content p:deep() a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.sites-container .sites-content .site-item .info-content p:deep() a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
 </style>

@@ -32,9 +32,9 @@ provide('toPageMethod', changeToPage);
                 <WellcomePart v-if="pageNum === 'hello'" @click="changeToPage('menu')" />
                 <BreifIntro v-else-if="pageNum === 'menu'"/>
                 <SelfPart v-else-if="pageNum === 'self'" :anchor="anchor"/>
-                <SitePart v-else-if="pageNum === 'site'" />
-                <PlayPart v-else-if="pageNum === 'play'" @click="changeToPage('study')"/>
-                <StudyPart v-else-if="pageNum === 'study'" @click="changeToPage('menu')"/>
+                <SitePart v-else-if="pageNum === 'site'" :anchor="anchor"/>
+                <PlayPart v-else-if="pageNum === 'play'" :anchor="anchor"/>
+                <StudyPart v-else-if="pageNum === 'study'" :anchor="anchor"/>
                 <ErrorPart v-else/>
             </transition>
         </div>

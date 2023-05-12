@@ -89,7 +89,7 @@ onMounted(() => {
     position: fixed;
     z-index: 5;
     transition: none;
-    opacity: 0.3;
+    opacity: 0.2;
 }
 
 .menu-container:hover {

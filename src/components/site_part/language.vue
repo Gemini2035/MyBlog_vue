@@ -36,7 +36,7 @@ onMounted(() => {
 <template>
     <div class="sites-container" :style="{height: `${dynamicHeight}px`}">
         <div class="title" :class="isActive? 'active' : ''" id="title">
-            <h1>构建本站点使用的工具</h1>
+            <h1>本站点使用的语言统计</h1>
             <img src="src/assets/site_part_imgs/arrow.right.svg" alt="详细" :class="isActive? 'active' : ''" @click="chageState()">
         </div>
         <div class="sites-content" id="body">111</div>

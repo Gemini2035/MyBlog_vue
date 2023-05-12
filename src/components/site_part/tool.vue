@@ -17,6 +17,12 @@ const isActive: Ref<boolean> = ref(false);
 const dynamicHeight: Ref<number> = ref(0);
 
 // mehtod
+const changeHeight: returnVoidFunction = () => {
+    if (isActive.value) dynamicHeight.value = (document.querySelector('#tool-title')!.clientHeight + 
+                                                document.querySelector('#tool-body')!.clientHeight);
+    else dynamicHeight.value = document.querySelector('#tool-title')!.clientHeight;
+}
+
 const initFunc: returnVoidFunction = () => {
     const jsonRequest: JsonRequest = new JsonRequest('name', 'tool_info');
     axios.get(ServerManager.getTextApi + jsonRequest.parse())
@@ -27,19 +33,14 @@ const initFunc: returnVoidFunction = () => {
         sitesList.value = [{name: "Error", id: "error", src: "", description: ""}];
     })
     .finally(() => {
-        if (!parm.initActive) { 
-            dynamicHeight.value = document.querySelector('#title')!.clientHeight;
-            return;
-        }
         isActive.value = parm.initActive!;
-        dynamicHeight.value = (document.querySelector('#title')!.clientHeight + document.querySelector('#body')!.clientHeight);
+        changeHeight();
     })
 }
 
 const chageState: returnVoidFunction = () => {
     isActive.value = !isActive.value;
-    if (isActive.value) dynamicHeight.value = (document.querySelector('#title')!.clientHeight + document.querySelector('#body')!.clientHeight);
-    else dynamicHeight.value = document.querySelector('#title')!.clientHeight;
+    changeHeight();
 
 }
 
@@ -48,7 +49,7 @@ const toTargetUrl: returnVoidFunction = (index: number) => {
 }
 
 const backToTop: returnVoidFunction = () => {
-    document.querySelector('#title')?.scrollIntoView({ behavior: 'smooth' })
+    document.querySelector('#tool-title')?.scrollIntoView({ behavior: 'smooth' })
 }
 
 onMounted(() => {
@@ -59,11 +60,11 @@ onMounted(() => {
 <template>
     <div class="sites-container" :style="{height: `${dynamicHeight}px`}">
         <PartMenu :init-x="100" :init-y="-100"/>
-        <div class="title" :class="isActive? 'active' : ''" id="title">
+        <div class="title" :class="isActive? 'active' : ''" id="tool-title">
             <h1>构建本站点使用的工具</h1>
             <img src="src/assets/site_part_imgs/arrow.right.svg" alt="详细" :class="isActive? 'active' : ''" @click="chageState()">
         </div>
-        <div class="sites-content" id="body">
+        <div class="sites-content" id="tool-body">
             <div v-for="(siteInfo, index) in sitesList" class="site-item" :key="index">
                 <img :src="`src/assets/site_part_imgs/${siteInfo.id}.svg`" alt="icon" class="icon">
                 <div class="info-content">

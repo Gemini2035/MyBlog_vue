@@ -1,31 +1,79 @@
 <script setup lang="ts">
-import { ExtractPropTypes, Ref, onMounted, ref } from 'vue';
+import { ExtractPropTypes, Raw, Ref, markRaw, onMounted, ref } from 'vue';
+import axios from 'axios';
 
 import { returnVoidFunction } from '../../../cat_define/type_define';
-
+import { ServerManager } from '../../../cat_define/server_info';
 // static
 const parm: Readonly<ExtractPropTypes<{initActive: BooleanConstructor;}>> = defineProps({initActive: Boolean});
+const langColorList: Raw<Array<string>> = markRaw([
+    'rgba(50, 205, 50)', 'rgba(75, 0, 130)', 'rgba(255, 215, 0)', 'rgba(255, 69, 0)', 'rgba(105, 105, 105)'
+]);
 
 // respond
 const isActive: Ref<boolean> = ref(false);
+const showPart: Ref<string> = ref('success') // success, loading, error三种状态，用于响应加载状态
 const dynamicHeight: Ref<number> = ref(0);
+const dynamicContent: Ref<Array<{name: string, personage: string}>> = ref(
+    [
+        {
+            "name": "Vue",
+            "personage": "96.6%"
+        },
+        {
+            "name": "TypeScript",
+            "personage": "2.3%"
+        },
+        {
+            "name": "Other",
+            "personage": "1.1%"
+        }
+    ]
+);
+const dynamicColor: Ref<Array<string>> = ref([
+    'rgba(50, 205, 50)', 'rgba(75, 0, 130)', 'rgba(255, 215, 0)', 'rgba(255, 69, 0)', 'rgba(105, 105, 105)'
+]);
 
 // mehtod
-const initFunc: returnVoidFunction = () => {
-    console.log(parm.initActive)
-    if (!parm.initActive) { 
-        dynamicHeight.value = document.querySelector('#title')!.clientHeight;
+const changeHeight: returnVoidFunction = () => {
+    if (isActive.value) dynamicHeight.value = (document.querySelector('#lang-title')!.clientHeight + 
+                                                document.querySelector('#lang-body')!.clientHeight);
+    else dynamicHeight.value = document.querySelector('#lang-title')!.clientHeight;
+}
+
+const getDynamicColor: returnVoidFunction = () => {
+    if (dynamicContent.value.length <= langColorList.length) {
+        dynamicColor.value = langColorList.slice(0, dynamicContent.value.length);
         return;
+    } else {
+        for(let i = 0; i < dynamicContent.value.length; i ++) dynamicColor.value[i] = 'rgba(0, 0, 0)';
     }
+}
+
+const getDynamicContent: returnVoidFunction = () => {
+    showPart.value = 'loading';
+    axios.get(ServerManager.getLangApi)
+    .then(res => {
+        const result = res.data;
+        if (result.state) throw Error(result);
+        else dynamicContent.value = result.data;
+        getDynamicColor();
+        showPart.value = 'success';
+    })
+    .catch(error => {
+        showPart.value = 'error';
+    })
+}
+
+const initFunc: returnVoidFunction = () => {
     isActive.value = parm.initActive!;
-    dynamicHeight.value = (document.querySelector('#title')!.clientHeight + document.querySelector('#body')!.clientHeight);
+    changeHeight();
+    // getDynamicContent();
 }
 
 const chageState: returnVoidFunction = () => {
     isActive.value = !isActive.value;
-    if (isActive.value) dynamicHeight.value = (document.querySelector('#title')!.clientHeight + document.querySelector('#body')!.clientHeight);
-    else dynamicHeight.value = document.querySelector('#title')!.clientHeight;
-
+    changeHeight();
 }
 
 onMounted(() => {
@@ -34,12 +82,38 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="sites-container" :style="{height: `${dynamicHeight}px`}">
-        <div class="title" :class="isActive? 'active' : ''" id="title">
+    <div class="lang-container" :style="{height: `${dynamicHeight}px`}">
+        <div class="title" :class="isActive? 'active' : ''" id="lang-title">
             <h1>本站点使用的语言统计</h1>
             <img src="src/assets/site_part_imgs/arrow.right.svg" alt="详细" :class="isActive? 'active' : ''" @click="chageState()">
         </div>
-        <div class="sites-content" id="body">111</div>
+        <div class="lang-content" id="lang-body">
+            <div v-show="showPart === 'success'" class="success">
+                <h1 class="lang-title">
+                    Languages
+                </h1>
+                <div class="progress">
+                    <span v-for="(language, index) in dynamicContent" :style="{width: language.personage, backgroundColor: dynamicColor[index]}">
+                    </span>
+                </div>
+                <div class="lang-list">
+                    <div v-for="(language, index) in dynamicContent" class="lang-item">
+                        <span class="lang-icon" :style="{backgroundColor: dynamicColor[index]}"></span>
+                        <span class="lang-name">{{language.name}}</span>
+                    </div>
+                </div>
+            </div>
+            <div v-show="showPart === 'loading'" class="loading">
+                <img src="src/assets/site_part_imgs/goforward.svg" alt="加载中">
+                <span>正在加载中...</span>
+
+            </div>
+            <div v-show="showPart === 'error'" class="error">
+                <img src="src/assets/site_part_imgs/exclamationmark.triangle.svg" alt="加载失败">
+                <span>加载失败!</span>
+                <span class="text-botton">重试</span>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -48,23 +122,22 @@ onMounted(() => {
     transition: 0.6s ease-in-out;
 }
 
-.sites-container {
+.lang-container {
     width: 99%;
-    background-color: red;
     margin: 0 auto 1%;
     height: 6%;
     overflow-y: hidden;
 }
 
-.sites-container .title {
+.lang-container .title {
     position: relative;
 }
 
-.sites-container .title h1 {
+.lang-container .title h1 {
     margin: 0;
 }
 
-.sites-container .title img {
+.lang-container .title img {
     height: 75%;
     width: auto;
     position: absolute;
@@ -73,7 +146,7 @@ onMounted(() => {
     right: 0;
 }
 
-.sites-container .title img:hover {
+.lang-container .title img:hover {
     cursor: pointer;
     animation: rightHoverAnimate 2s infinite;
 }
@@ -81,12 +154,93 @@ onMounted(() => {
     50% { opacity: 0.5; }
 }
 
-.sites-container .title img.active {
+.lang-container .title img.active {
     transform: translateY(-50%) rotateZ(90deg);
 }
 
-.sites-container .sites-content {
-    background-color: blue;
+.lang-container .lang-content .success {
+    width: 99%;
+    margin: auto;
+}
 
+.lang-container .lang-content .success * {
+    margin: 0;
+}
+
+.success .lang-title {
+    font-size: 2.5rem;
+}
+
+.lang-container .lang-content .success .progress {
+    width: 99%;
+    margin: 0 auto;
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.lang-container .lang-content .success .progress span {
+    height: 20px;
+}
+
+.lang-container .lang-content .success .lang-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px auto;
+    width: 95%;
+
+}
+
+.lang-item {
+    width: 33.3%;
+    display: flex;
+}
+
+.lang-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.lang-name {
+    width: calc(100% - 40px);
+    font-size: 1.2rem;
+    transform: translateX(10px);
+}
+
+.lang-container .lang-content .error,
+.lang-container .lang-content .loading {
+    display: flex;
+}
+
+.lang-container .lang-content .error img,
+.lang-container .lang-content .loading img {
+    height: 50px;
+    width: auto;
+    margin: 0 5px;
+}
+
+.lang-container .lang-content .loading img {
+    animation: loadingAnimate 1.5s infinite;
+}
+@keyframes loadingAnimate {
+    20% { transform: rotateZ(0deg); }
+    100% { transform: rotateZ(360deg); }
+}
+
+.lang-container .lang-content .loading span,
+.lang-container .lang-content .error span {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    height: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    cursor: default;
+}
+
+.lang-container .lang-content .error span.text-botton:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 </style>

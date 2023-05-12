@@ -12,7 +12,7 @@ const langColorList: Raw<Array<string>> = markRaw([
 
 // respond
 const isActive: Ref<boolean> = ref(false);
-const showPart: Ref<string> = ref('success') // success, loading, error三种状态，用于响应加载状态
+const showPart: Ref<string> = ref('loading'); // success, loading, error三种状态，用于响应加载状态
 const dynamicHeight: Ref<number> = ref(0);
 const dynamicContent: Ref<Array<{name: string, personage: string}>> = ref(
     [
@@ -30,9 +30,8 @@ const dynamicContent: Ref<Array<{name: string, personage: string}>> = ref(
         }
     ]
 );
-const dynamicColor: Ref<Array<string>> = ref([
-    'rgba(50, 205, 50)', 'rgba(75, 0, 130)', 'rgba(255, 215, 0)', 'rgba(255, 69, 0)', 'rgba(105, 105, 105)'
-]);
+const dynamicColor: Ref<Array<string>> = ref([]);
+const langIsHover: Ref<Array<boolean>> = ref([]);
 
 // mehtod
 const changeHeight: returnVoidFunction = () => {
@@ -58,23 +57,29 @@ const getDynamicContent: returnVoidFunction = () => {
         if (result.state) throw Error(result);
         else dynamicContent.value = result.data;
         getDynamicColor();
+        for (let i = 0; i < dynamicContent.value.length; i ++) langIsHover.value[i] = false;
         showPart.value = 'success';
     })
-    .catch(error => {
+    .catch(() => {
         showPart.value = 'error';
     })
+    .finally(() => changeHeight())
 }
 
 const initFunc: returnVoidFunction = () => {
     isActive.value = parm.initActive!;
     changeHeight();
-    // getDynamicContent();
+    getDynamicContent();
 }
 
 const chageState: returnVoidFunction = () => {
     isActive.value = !isActive.value;
     changeHeight();
 }
+
+const mouseEnterBehavior: returnVoidFunction = (index: number) => langIsHover.value[index] = true;
+
+const mouseOutBehavior: returnVoidFunction = (index: number) => langIsHover.value[index] = false;
 
 onMounted(() => {
     initFunc();
@@ -93,11 +98,15 @@ onMounted(() => {
                     Languages
                 </h1>
                 <div class="progress">
-                    <span v-for="(language, index) in dynamicContent" :style="{width: language.personage, backgroundColor: dynamicColor[index]}">
+                    <span v-for="(language, index) in dynamicContent" 
+                    :style="{width: language.personage, backgroundColor: dynamicColor[index]}"
+                    :class="langIsHover[index]? 'isChoosen' : ''"
+                    @mouseenter="mouseEnterBehavior(index)" @mouseout="mouseOutBehavior(index)">
                     </span>
                 </div>
                 <div class="lang-list">
-                    <div v-for="(language, index) in dynamicContent" class="lang-item">
+                    <div v-for="(language, index) in dynamicContent" class="lang-item" :class="langIsHover[index]? 'isChoosen' : ''"
+                    @mouseenter="mouseEnterBehavior(index)" @mouseout="mouseOutBehavior(index)">
                         <span class="lang-icon" :style="{backgroundColor: dynamicColor[index]}"></span>
                         <span class="lang-name">{{language.name}}</span>
                     </div>
@@ -111,7 +120,7 @@ onMounted(() => {
             <div v-show="showPart === 'error'" class="error">
                 <img src="src/assets/site_part_imgs/exclamationmark.triangle.svg" alt="加载失败">
                 <span>加载失败!</span>
-                <span class="text-botton">重试</span>
+                <span class="text-botton" @click="getDynamicContent()">重试</span>
             </div>
         </div>
     </div>
@@ -177,10 +186,15 @@ onMounted(() => {
     display: flex;
     border-radius: 10px;
     overflow: hidden;
+    height: 20px;
 }
 
-.lang-container .lang-content .success .progress span {
-    height: 20px;
+.lang-container .lang-content .success .progress span.isChoosen {
+    animation: choosenMove 1.5s infinite;
+}
+
+@keyframes choosenMove {
+    50% { opacity: 0.3;}       
 }
 
 .lang-container .lang-content .success .lang-list {
@@ -189,12 +203,16 @@ onMounted(() => {
     flex-wrap: wrap;
     margin: 5px auto;
     width: 95%;
-
 }
 
 .lang-item {
     width: 33.3%;
     display: flex;
+    cursor: default;
+}
+
+.lang-item.isChoosen{
+    animation: choosenMove 1.5s infinite;
 }
 
 .lang-icon {

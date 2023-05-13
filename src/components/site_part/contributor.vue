@@ -167,4 +167,22 @@ onMounted(() => {
     line-height: 1.5;
 }
 
+/* 以下为移动端屏幕适配 */
+/** Pad **/
+@media only screen and (min-width: 320px) and (max-width: 1024px) {
+    .contributor-item {
+        border: none;
+        background-color: transparent;
+    }
+
+    .contributor-item img{
+        margin: auto;
+    }
+
+    .contributor-item div {
+        display: none;
+    }
+
+}
+
 </style>

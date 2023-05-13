@@ -19,7 +19,7 @@ const otherContent: Ref<Array<{name: string, content: string}>> = ref([]);
 // mehtod
 const changeHeight: returnVoidFunction = () => {
     if (isActive.value) dynamicHeight.value = (document.querySelector('#others-title')!.clientHeight + 
-                                                document.querySelector('#others-body')!.clientHeight);
+                                                document.querySelector('#others-body')!.clientHeight) + 15;
     else dynamicHeight.value = document.querySelector('#others-title')!.clientHeight;
 }
 

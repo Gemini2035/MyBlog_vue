@@ -123,4 +123,22 @@ onMounted(() => {
 .site-container .component-container::-webkit-scrollbar {
     display: none;
 }
+
+/* 以下为设备适配 */
+/** Phone **/
+@media only screen and (min-width: 320px) and (max-width: 1024px) {
+
+    .site-container .title * {
+        margin: 0;
+    }
+
+    .site-container .title h1 {
+        position: relative;
+    }
+
+    .site-container .title p {
+        position: inherit;
+        margin: -3% 0 5% 1%;
+    }
+}
 </style>

@@ -108,7 +108,7 @@ onMounted(() => {
                     <div v-for="(language, index) in dynamicContent" class="lang-item" :class="langIsHover[index]? 'isChoosen' : ''"
                     @mouseenter="mouseEnterBehavior(index)" @mouseout="mouseOutBehavior(index)">
                         <span class="lang-icon" :style="{backgroundColor: dynamicColor[index]}"></span>
-                        <span class="lang-name">{{language.name}}</span>
+                        <span class="lang-name">{{language.name}}: {{language.personage}}</span>
                     </div>
                 </div>
             </div>
@@ -260,5 +260,21 @@ onMounted(() => {
 .lang-container .lang-content .error span.text-botton:hover {
     cursor: pointer;
     text-decoration: underline;
+}
+
+/* 以下为设备适配 */
+/** Phone **/
+@media only screen and (min-width: 320px) and (max-width: 1024px) {
+    .lang-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .lang-name {
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 </style>

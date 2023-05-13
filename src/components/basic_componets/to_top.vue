@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ExtractPropTypes, Ref, onMounted, ref } from 'vue';
+import { ExtractPropTypes } from 'vue';
 import { returnVoidFunction } from '../../../cat_define/type_define';
 
 // static
@@ -27,16 +27,18 @@ const clickBehavior: returnVoidFunction = () => {
     height: 50px;
     position: fixed;
     z-index: 4;
-    bottom: 1%;
+    top: 70%;
     right: 0;
 }
 
 .top-container img {
     height: 80%;
     width: auto;
+    opacity: 0.5;
 }
 
 .top-container img:hover {
+    opacity: 1;
     cursor: pointer;
     animation: upHoverAnimate 1.5s ease-in-out;
 }

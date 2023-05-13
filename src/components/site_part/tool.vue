@@ -41,7 +41,6 @@ const initFunc: returnVoidFunction = () => {
 const chageState: returnVoidFunction = () => {
     isActive.value = !isActive.value;
     changeHeight();
-
 }
 
 const toTargetUrl: returnVoidFunction = (index: number) => {

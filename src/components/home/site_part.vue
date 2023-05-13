@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ExtractPropTypes, Raw, Ref, markRaw, onMounted, onUnmounted, ref } from 'vue';
+import { ExtractPropTypes, Raw, Ref, markRaw, onMounted, ref } from 'vue';
+import axios from 'axios';
 
 import { returnVoidFunction } from '../../../cat_define/type_define';
 import Contributor from '../site_part/contributor.vue';
 import Language from '../site_part/language.vue';
 import Others from '../site_part/others.vue';
 import Tool from '../site_part/tool.vue';
+import { JsonRequest } from '../../../cat_define/server_class';
+import { ServerManager } from '../../../cat_define/server_info';
 
 // static
 const reseiver: Readonly<ExtractPropTypes<{anchor: StringConstructor;}>> = defineProps({anchor: String});
@@ -27,18 +30,43 @@ const componentsList: Raw<Array<{id: string, component: object}>> = markRaw([
         component: Others
     }
 ]);
+const jsonRequest: JsonRequest = new JsonRequest('name', 'basic_info');
+let Timer: number | undefined;
 
 // respond
 const componentContainerHeight: Ref<number> = ref(0);
-const showToTop: Ref<boolean> = ref(false);
+const timeOfSite: Ref<string> = ref('');
 
 // method
 const getHeight: returnVoidFunction = () => {
     componentContainerHeight.value = document.querySelector('#site-title')!.clientHeight + 6;
 }
 
+const initFunc: returnVoidFunction = () => {
+    getHeight();
+    axios.get(ServerManager.getTextApi + jsonRequest.parse())
+    .then(response => {
+        const startDay: Date = new Date(response.data.timeOfSite);
+        let diff: number = new Date().getTime() - startDay.getTime();
+        Timer = window.setInterval(() => {
+            let second: number = Math.floor(diff / 1000);
+            let day: number = Math.floor(second / 86400);
+            second -= day * 86400;
+            let hour: number = Math.floor(second / 3600);
+            second -= hour * 3600;
+            let minute = Math.floor(second / 60);
+            second -= minute * 60;
+            timeOfSite.value = `${day}天 ${hour < 10? '0' + hour : hour}时 ${minute < 10? '0' + minute : minute}分 ${second < 10? '0' + second : second}秒`;
+            diff += 1000;
+        }, 1000)
+    })
+    .catch(() => {
+        timeOfSite.value = '???天???分???秒';
+    })
+}
+
 onMounted(() => {
-    getHeight()
+    initFunc();
 })
 
 </script>
@@ -47,7 +75,7 @@ onMounted(() => {
     <div class="site-container">
         <div class="title" id="site-title">
             <h1>关于本站点</h1>
-            <p>200天20小时12秒</p>
+            <p>{{timeOfSite}}</p>
             <hr>
         </div>
         <div class="component-container" :style="{height: `calc(100vh - ${componentContainerHeight}px)`}">

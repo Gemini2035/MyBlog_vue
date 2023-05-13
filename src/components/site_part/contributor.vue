@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ExtractPropTypes, Ref, onMounted, ref } from 'vue';
+import axios from 'axios';
 
 import { returnVoidFunction } from '../../../cat_define/type_define';
 import { JsonRequest } from '../../../cat_define/server_class';
-import axios from 'axios';
 import { ServerManager } from '../../../cat_define/server_info';
 
 // static

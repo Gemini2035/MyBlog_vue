@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { Ref, onMounted, onUnmounted, ref } from 'vue';
+import axios from 'axios';
+
 import { returnVoidFunction, returnNumberFunction } from '../../../cat_define/type_define';
+import { JsonRequest } from '../../../cat_define/server_class';
+import { ServerManager } from '../../../cat_define/server_info';
 
+// static
+const jsonRequest: JsonRequest = new JsonRequest('name', 'basic_info');
 
+// respond
 const imgDegree: Ref<string> = ref('0deg');
 const siteDays: Ref<number> = ref(0);
 let LoopTimer: number | undefined = undefined;
@@ -20,20 +27,24 @@ const getDays: returnNumberFunction = (date: string) => {
 }
 
 const initDays: returnVoidFunction = () => {
-    const target: number = getDays('2023.03.20');
-
-    const updateCounter: returnVoidFunction = () => {
-      const c: number = +siteDays.value;
-      const increment: number = target / 200
-
-      if(c < target) {
-        siteDays.value = Math.ceil(c + increment);
-          setTimeout(updateCounter, 3);
-      } else {
-          siteDays.value = target;
-      }
-    }
-    updateCounter();
+    axios.get(ServerManager.getTextApi + jsonRequest.parse())
+    .then(response => {
+        const target: number = getDays(response.data.timeOfSite);
+        const updateCounter: returnVoidFunction = () => {
+            const c: number = +siteDays.value;
+            const increment: number = target / 200
+            if(c < target) {
+                siteDays.value = Math.ceil(c + increment);
+                setTimeout(updateCounter, 3);
+            } else {
+                siteDays.value = target;
+            }
+        }
+        updateCounter();
+    })
+    .catch(() => {
+        siteDays.value = 0;
+    })
 }
 
 onMounted(() => {

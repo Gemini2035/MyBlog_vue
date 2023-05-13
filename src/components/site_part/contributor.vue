@@ -22,6 +22,10 @@ const changeHeight: returnVoidFunction = () => {
     else dynamicHeight.value = document.querySelector('#contributors-title')!.clientHeight;
 }
 
+const toUserPage: returnVoidFunction = (username: string) => {
+    window.open(`https://github.com/${username}`, '_blank');
+}
+
 const initFunc: returnVoidFunction = () => {
     axios.get(ServerManager.getTextApi + jsonRequest.parse())
     .then(response => {
@@ -53,7 +57,8 @@ onMounted(() => {
             <img src="src/assets/site_part_imgs/arrow.right.svg" alt="详细" :class="isActive? 'active' : ''" @click="chageState()">
         </div>
         <div class="contributors-content" id="contributors-body">
-            <div v-for="(contributor, index) in contributorList" class="contributor-item">
+            <div v-for="(contributor, index) in contributorList" class="contributor-item" :key="index"
+            @click="toUserPage(contributor.name)">
                 <img :src="contributor.headImg" alt="headImg">
                 <div>
                     <h2>{{contributor.name}}</h2>
@@ -124,8 +129,7 @@ onMounted(() => {
 
 .contributor-item:hover {
     cursor: pointer;
-    opacity: 0.5;
-    background-color: rgb(68, 68, 68);
+    background-color: rgba(68, 68, 68, 0.5);
 }
 
 .contributor-item>img{

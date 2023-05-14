@@ -6,7 +6,6 @@ import { ServerManager } from '../../../cat_define/server_info';
 
 // static
 const parm: Readonly<ExtractPropTypes<{anchor: StringConstructor;}>> = defineProps({anchor: String});
-console.log(parm.anchor)
 const menuInfo: Raw<Array<{name: string, id: string, imgSrc: string}>> = markRaw([
     { name: '全部文章', id: 'all', imgSrc: 'src/assets/study_part_img/a.circle.svg' },
     { name: '前端文章', id: 'web', imgSrc: 'src/assets/study_part_img/f.circle.svg' },
@@ -17,8 +16,8 @@ const menuInfo: Raw<Array<{name: string, id: string, imgSrc: string}>> = markRaw
 ]);
 
 // respond
-const page: Ref<string> = ref(parm.anchor || 'all');
-const dynamicWidth: Ref<number> = ref(10);
+const page: Ref<string> = ref(parm.anchor?.toLocaleLowerCase() || 'all');
+const dynamicWidth: Ref<number> = ref(70);
 const isActive: Ref<boolean> = ref(false);
 const essayList: Ref<Array<{title: string, pubdate: string, essayId: number, filePath: string, classify: string}>> = ref([]);
 
@@ -49,7 +48,6 @@ const changePage: returnVoidFunction = (toPage: string) => {
 }
 
 onMounted(() => {
-    changeWidth();
     getEssayList();
 })
 </script>
@@ -73,6 +71,7 @@ onMounted(() => {
                             <p>文章分类: {{essayInfo.classify}}</p>
                         </div>
                     </div>
+                    <p class="end-text" :key="-1">没有更多了哦~</p>
                 </transition-group>
             </div>
     </div>
@@ -195,6 +194,10 @@ onMounted(() => {
 
 .essay-leave-to {
     opacity: 0;
+}
+
+.end-text {
+    text-align: center;
 }
 
 </style>

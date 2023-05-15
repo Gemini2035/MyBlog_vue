@@ -19,12 +19,6 @@ const itemInfo: Raw<Array<{title: string, titleImg: string, itemMenu: Array<stri
         id: 'site'
     },
     {
-        title: '日常生活',
-        titleImg: "src/assets/breif_part_imgs/gamecontroller.svg",
-        itemMenu: ['动漫', '现实生活', '游戏人生'],
-        id: 'play'
-    },
-    {
         title: '学习记录',
         titleImg: "src/assets/breif_part_imgs/book.svg",
         itemMenu: ['Web', 'Python', 'C&Cpp', 'SwiftUI', '其他'],
@@ -93,6 +87,7 @@ const itemInfo: Raw<Array<{title: string, titleImg: string, itemMenu: Array<stri
 .main-menu .item-content {
     border-bottom: 1px solid;
     height: calc(25% - 2px);
+    margin-bottom: 5%;
     padding: 5px;
     transition: 0.6s ease-in-out;
 }

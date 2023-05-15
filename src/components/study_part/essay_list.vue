@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ExtractPropTypes, Raw, Ref, markRaw, onMounted, ref } from 'vue';
-import { returnVoidFunction } from '../../../cat_define/type_define';
 import axios from 'axios';
+
+import { returnVoidFunction } from '../../../cat_define/type_define';
 import { ServerManager } from '../../../cat_define/server_info';
+import EssayDetail from './essay_detail.vue';
 
 // static
 const parm: Readonly<ExtractPropTypes<{anchor: StringConstructor;}>> = defineProps({anchor: String});
@@ -20,6 +22,8 @@ const page: Ref<string> = ref(parm.anchor?.toLocaleLowerCase() || 'all');
 const dynamicWidth: Ref<number> = ref(70);
 const isActive: Ref<boolean> = ref(false);
 const essayList: Ref<Array<{title: string, pubdate: string, essayId: number, filePath: string, classify: string}>> = ref([]);
+const showDetail: Ref<boolean> = ref(false);
+const parmId: Ref<number> = ref(0);
 
 // method
 const changeWidth: returnVoidFunction = () => {
@@ -47,6 +51,15 @@ const changePage: returnVoidFunction = (toPage: string) => {
     page.value = toPage;
 }
 
+const toEssayDetail: returnVoidFunction = (id: number = 0) => {
+    if (id) parmId.value = id;
+    showDetail.value = !showDetail.value;
+}
+
+const addEssay: returnVoidFunction = () => {
+    console.log('111');
+}
+
 onMounted(() => {
     getEssayList();
 })
@@ -58,22 +71,28 @@ onMounted(() => {
             <div v-for="(menuItem, index) in menuInfo" :key="index" class="menu-item" :class="menuItem.id === page? 'isChoosen' : ''"
             @mouseenter="hoverBehavior()" @mouseleave="hoverBehavior()" @click="changePage(menuItem.id)">
                 <img :src="menuItem.imgSrc" alt="" />
-                <span class="menu-detail" :class="isActive? 'active' : ''">{{menuItem.name}}</span>
+                <transition name="menu-text">
+                    <span class="menu-detail" :class="isActive? 'active' : ''">{{menuItem.name}}</span>
+                </transition>
             </div>
         </div>
-            <div class="essay-list" :style="{width: `calc(100% - ${dynamicWidth}px - 6px)`}">
-                <transition-group name="essay">
-                    <div class="essay-item" v-for="(essayInfo, index) in essayList" :key="index" v-show="page === 'all' || page === essayInfo.classify">
-                        <img src="src/assets/study_part_img/defaultImg.svg" alt="文章图片">
-                        <h1>{{essayInfo.title}}</h1>
-                        <div>
-                            <p>发表时间: {{essayInfo.pubdate.split('T')[0]}}</p>
-                            <p>文章分类: {{essayInfo.classify}}</p>
-                        </div>
+        <div class="essay-list" :style="{width: `calc(100% - ${dynamicWidth}px - 6px)`}">
+            <transition-group name="essay">
+                <div class="essay-item" v-for="(essayInfo, index) in essayList" :key="index" v-show="page === 'all' || page === essayInfo.classify" @click="toEssayDetail(essayInfo.essayId)">
+                    <img src="src/assets/study_part_img/defaultImg.svg" alt="文章图片">
+                    <h1>{{essayInfo.title}}</h1>
+                    <div>
+                        <p>发表时间: {{essayInfo.pubdate.split('T')[0]}}</p>
+                        <p>文章分类: {{essayInfo.classify}}</p>
                     </div>
-                    <p class="end-text" :key="-1">没有更多了哦~</p>
-                </transition-group>
-            </div>
+                </div>
+                <p class="end-text" :key="-1">没有更多了哦~</p>
+                <p class="essay-add" :key="-2" @click="addEssay()">新增</p>
+            </transition-group>
+        </div>
+        <transition name="essay">
+            <EssayDetail v-show="showDetail" :changeState="toEssayDetail" :essayId="parmId"/>
+        </transition>
     </div>
 </template>
 
@@ -185,6 +204,7 @@ onMounted(() => {
 }
 
 .essay-leave-from {
+    transform: none;
     opacity: 1;
 }
 
@@ -193,11 +213,160 @@ onMounted(() => {
 }
 
 .essay-leave-to {
+    transform: translateX(100%);
     opacity: 0;
 }
 
 .end-text {
     text-align: center;
+    margin: 0;
 }
 
+.essay-add {
+    text-align: center;
+    cursor: default;
+    margin: 0;
+    color: rgba(150, 198, 230, 0.9)
+}
+
+.essay-add:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.essay-enter-from,
+.essay-leave-to {
+    transform: translateY(-30%);
+}
+
+.essay-enter-active,
+.essay-leave-active {
+    transition: 0.6s ease-in-out,
+}
+
+.essay-enter-to,
+.essay-enter-from {
+    transform: none;
+}
+
+
+
+/* 以下为屏幕适配 */
+@media only screen and (min-width: 320px) and (max-width: 649px) {
+    .essay-container {
+        flex-direction: column;
+    }
+
+    .essay-menu {
+        width: 100% !important;
+        max-width: none;
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: 0;
+    }
+
+    .essay-menu::-webkit-scrollbar{
+        display: none;
+    };
+
+    .essay-menu .menu-item {
+        margin-right: 3px;
+    }
+
+    .essay-menu .menu-item img {
+        display: none;
+    }
+
+    .essay-menu .menu-item .menu-detail {
+        position: inherit;
+        white-space: nowrap;
+        /* display: none; */
+        font-size: 1rem;
+    }
+
+    .essay-item img {
+        width: auto;
+        height: 90%;
+    }
+
+    .essay-item h1 {
+        font-size: 1.5rem;
+    }
+
+    .essay-item div {
+        display: none;
+    }
+
+    .essay-list {
+        width: 100% !important;
+        border: none;
+        border-top: 3px solid;
+        border-top-right-radius: 15px;
+        margin: 0;
+    }
+
+    .menu-text-enter-from,
+    .menu-text-leave-to {
+        opacity: 0;
+    }
+
+    .menu-text-enter-active,
+    .menu-text-leave-active {
+        transition: 0.6s ease-in-out;
+    }
+
+    .menu-text-enter-to,
+    .menu-text-leave-from {
+        opacity: 1;
+    }
+}
+
+@media only screen and (min-width: 650px) and (max-width: 1024px) {
+    .essay-container {
+        flex-direction: column;
+    }
+
+    .essay-menu {
+        width: 100% !important;
+        max-width: none;
+        display: flex;
+    }
+
+    .essay-menu .menu-item {
+        margin-right: 3px;
+    }
+
+    .essay-menu .menu-item .menu-detail {
+        position: inherit;
+        white-space: nowrap;
+        display: none;
+    }
+
+    .essay-menu .menu-item:hover .menu-detail {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .essay-list {
+        width: 100% !important;
+        border: none;
+        border-top: 3px solid;
+        border-top-right-radius: 15px;
+    }
+
+    .menu-text-enter-from,
+    .menu-text-leave-to {
+        opacity: 0;
+    }
+
+    .menu-text-enter-active,
+    .menu-text-leave-active {
+        transition: 0.6s ease-in-out;
+    }
+
+    .menu-text-enter-to,
+    .menu-text-leave-from {
+        opacity: 1;
+    }
+}
 </style>
